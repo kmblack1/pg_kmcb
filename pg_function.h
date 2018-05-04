@@ -18,14 +18,10 @@ PGDLLEXPORT Datum hostname(PG_FUNCTION_ARGS);
 
 /*字符串处理*/
 PGDLLEXPORT Datum split_string(PG_FUNCTION_ARGS);
-//PGDLLEXPORT Datum split_tsvector(PG_FUNCTION_ARGS);
 PGDLLEXPORT Datum generate_crc32_v1(PG_FUNCTION_ARGS);
 PGDLLEXPORT Datum string_simil(PG_FUNCTION_ARGS);
 PGDLLEXPORT Datum string_same(PG_FUNCTION_ARGS);
 PGDLLEXPORT Datum generate_rand_string(PG_FUNCTION_ARGS);
-/*分页计算*/
-PGDLLEXPORT Datum paging_calculate_v1(PG_FUNCTION_ARGS);
-PGDLLEXPORT Datum paging_calculate_v2(PG_FUNCTION_ARGS);
 /*加密解密*/
 PGDLLEXPORT Datum generate_aes_key(PG_FUNCTION_ARGS);
 PGDLLEXPORT Datum generate_aes_iv(PG_FUNCTION_ARGS);
