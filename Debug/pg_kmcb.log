@@ -1,0 +1,97 @@
+﻿  simil.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  se_string.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  se_std.c
+  se_round.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  se_rand.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  pg_string.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  pg_round.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  pg_rand.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  pg_function.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  pg_crypto.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  se_datetime.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  pg_datetime.c
+c:\pgsql\include\server\postgres.h(730): warning C4013: “GET_8_BYTES”未定义；假设外部返回 int
+c:\pgsql\include\server\postgres.h(756): warning C4013: “SET_8_BYTES”未定义；假设外部返回 int
+  aes.c
+d:\mywork\2017c++\pg_pubkmcb\aes.c : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  正在生成代码...
+    正在创建库 D:\MyWork\2017C++\pg_pubkmcb\Debug\pg_kmcb.lib 和对象 D:\MyWork\2017C++\pg_pubkmcb\Debug\pg_kmcb.exp
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _errstart，该符号在函数 _get_date_from_sn 中被引用
+pg_crypto.obj : error LNK2001: 无法解析的外部符号 _errstart
+pg_rand.obj : error LNK2001: 无法解析的外部符号 _errstart
+pg_string.obj : error LNK2001: 无法解析的外部符号 _errstart
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _errfinish，该符号在函数 _get_date_from_sn 中被引用
+pg_crypto.obj : error LNK2001: 无法解析的外部符号 _errfinish
+pg_rand.obj : error LNK2001: 无法解析的外部符号 _errfinish
+pg_string.obj : error LNK2001: 无法解析的外部符号 _errfinish
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _errcode，该符号在函数 _get_date_from_sn 中被引用
+pg_crypto.obj : error LNK2001: 无法解析的外部符号 _errcode
+pg_rand.obj : error LNK2001: 无法解析的外部符号 _errcode
+pg_string.obj : error LNK2001: 无法解析的外部符号 _errcode
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _errmsg，该符号在函数 _get_date_from_sn 中被引用
+pg_crypto.obj : error LNK2001: 无法解析的外部符号 _errmsg
+pg_rand.obj : error LNK2001: 无法解析的外部符号 _errmsg
+pg_string.obj : error LNK2001: 无法解析的外部符号 _errmsg
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _GET_8_BYTES，该符号在函数 _get_date_from_sn 中被引用
+pg_function.obj : error LNK2001: 无法解析的外部符号 _GET_8_BYTES
+pg_round.obj : error LNK2001: 无法解析的外部符号 _GET_8_BYTES
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _SET_8_BYTES，该符号在函数 _get_id_from_sn 中被引用
+pg_round.obj : error LNK2001: 无法解析的外部符号 _SET_8_BYTES
+pg_string.obj : error LNK2001: 无法解析的外部符号 _SET_8_BYTES
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _get_call_result_type，该符号在函数 _get_yydoy_id_from_sn 中被引用
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _BlessTupleDesc，该符号在函数 _get_yydoy_id_from_sn 中被引用
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _HeapTupleHeaderGetDatum，该符号在函数 _get_yydoy_id_from_sn 中被引用
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _init_MultiFuncCall，该符号在函数 _get_yydoy_id_from_sn 中被引用
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _per_MultiFuncCall，该符号在函数 _get_yydoy_id_from_sn 中被引用
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _end_MultiFuncCall，该符号在函数 _get_yydoy_id_from_sn 中被引用
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _date2j，该符号在函数 _get_date_from_sn 中被引用
+pg_datetime.obj : error LNK2019: 无法解析的外部符号 _heap_form_tuple，该符号在函数 _get_yydoy_id_from_sn 中被引用
+pg_datetime.obj : error LNK2001: 无法解析的外部符号 __imp__CurrentMemoryContext
+pg_crypto.obj : error LNK2019: 无法解析的外部符号 _random，该符号在函数 _generate_key 中被引用
+pg_rand.obj : error LNK2001: 无法解析的外部符号 _random
+se_rand.obj : error LNK2001: 无法解析的外部符号 _random
+se_string.obj : error LNK2001: 无法解析的外部符号 _palloc
+simil.obj : error LNK2001: 无法解析的外部符号 _palloc
+pg_crypto.obj : error LNK2001: 无法解析的外部符号 _palloc
+pg_function.obj : error LNK2001: 无法解析的外部符号 _palloc
+pg_rand.obj : error LNK2001: 无法解析的外部符号 _palloc
+se_round.obj : error LNK2001: 无法解析的外部符号 _palloc
+pg_crypto.obj : error LNK2019: 无法解析的外部符号 _pfree，该符号在函数 _aes_decrypt 中被引用
+pg_string.obj : error LNK2001: 无法解析的外部符号 _pfree
+se_round.obj : error LNK2001: 无法解析的外部符号 _pfree
+pg_crypto.obj : error LNK2019: 无法解析的外部符号 _pg_detoast_datum，该符号在函数 _aes_decrypt 中被引用
+pg_string.obj : error LNK2001: 无法解析的外部符号 _pg_detoast_datum
+pg_crypto.obj : error LNK2019: 无法解析的外部符号 _pg_b64_encode，该符号在函数 _aes_encrypt 中被引用
+pg_crypto.obj : error LNK2019: 无法解析的外部符号 _pg_b64_decode，该符号在函数 _aes_decrypt 中被引用
+pg_crypto.obj : error LNK2019: 无法解析的外部符号 _pg_b64_enc_len，该符号在函数 _aes_encrypt 中被引用
+pg_crypto.obj : error LNK2019: 无法解析的外部符号 _pg_b64_dec_len，该符号在函数 _aes_decrypt 中被引用
+pg_crypto.obj : error LNK2019: 无法解析的外部符号 _text_to_cstring，该符号在函数 _aes_decrypt 中被引用
+pg_string.obj : error LNK2001: 无法解析的外部符号 _text_to_cstring
+pg_function.obj : error LNK2019: 无法解析的外部符号 __imp__gethostname@8，该符号在函数 _hostname 中被引用
+pg_string.obj : error LNK2019: 无法解析的外部符号 _pg_detoast_datum_packed，该符号在函数 _string_simil 中被引用
+se_string.obj : error LNK2001: 无法解析的外部符号 _pg_detoast_datum_packed
+pg_string.obj : error LNK2019: 无法解析的外部符号 _construct_array，该符号在函数 _split_string 中被引用
+pg_string.obj : error LNK2019: 无法解析的外部符号 _get_typlenbyvalalign，该符号在函数 _split_string 中被引用
+se_round.obj : error LNK2019: 无法解析的外部符号 _pg_snprintf，该符号在函数 _byte_format 中被引用
+C:\pgsql\lib\postgres.lib : warning LNK4272: 库计算机类型“x64”与目标计算机类型“X86”冲突
+D:\MyWork\2017C++\pg_pubkmcb\Debug\pg_kmcb.dll : fatal error LNK1120: 29 个无法解析的外部命令

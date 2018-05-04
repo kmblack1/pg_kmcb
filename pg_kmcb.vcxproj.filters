@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="pg_function.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="aes.c">
+      <Filter>crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="se_std.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="se_round.c">
+      <Filter>round</Filter>
+    </ClCompile>
+    <ClCompile Include="pg_round.c">
+      <Filter>round</Filter>
+    </ClCompile>
+    <ClCompile Include="pg_crypto.c">
+      <Filter>crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="se_string.c">
+      <Filter>string</Filter>
+    </ClCompile>
+    <ClCompile Include="pg_string.c">
+      <Filter>string</Filter>
+    </ClCompile>
+    <ClCompile Include="pg_rand.c">
+      <Filter>rand</Filter>
+    </ClCompile>
+    <ClCompile Include="se_rand.c">
+      <Filter>rand</Filter>
+    </ClCompile>
+    <ClCompile Include="pg_datetime.c">
+      <Filter>datetime</Filter>
+    </ClCompile>
+    <ClCompile Include="se_datetime.c">
+      <Filter>datetime</Filter>
+    </ClCompile>
+    <ClCompile Include="simil.c">
+      <Filter>string</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="se_std.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pg_function.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="aes.h">
+      <Filter>crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="se_round.h">
+      <Filter>round</Filter>
+    </ClInclude>
+    <ClInclude Include="se_string.h">
+      <Filter>string</Filter>
+    </ClInclude>
+    <ClInclude Include="se_rand.h">
+      <Filter>rand</Filter>
+    </ClInclude>
+    <ClInclude Include="se_datetime.h">
+      <Filter>datetime</Filter>
+    </ClInclude>
+    <ClInclude Include="simil.h">
+      <Filter>string</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile">
+      <Filter>其它</Filter>
+    </None>
+    <None Include="pg_kmcb.control">
+      <Filter>其它</Filter>
+    </None>
+    <None Include="pg_kmcb--1.0.sql">
+      <Filter>其它</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{fd8c9ec0-cc0d-4f87-80f8-f0765ed0b523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{806f61b0-8af2-4f88-945e-5d3b5beabc2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="其它">
+      <UniqueIdentifier>{720e7819-dde9-4e77-8f37-ed1f3aee1e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="crypto">
+      <UniqueIdentifier>{3e971db9-776b-48cf-8a52-4935ea210b33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="string">
+      <UniqueIdentifier>{44bb77db-9521-42f6-89bd-6ce15f7c543a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="round">
+      <UniqueIdentifier>{e7f7475d-6536-4f56-9d4a-4107980344e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rand">
+      <UniqueIdentifier>{83d405fe-90e7-4fdb-8110-264317590961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="datetime">
+      <UniqueIdentifier>{75a8d745-f0e0-43a6-97f5-7a90a8513949}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,23 @@
+﻿  aes.c
+aes.c : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  pg_datetime.c
+  se_datetime.c
+  pg_crypto.c
+  pg_function.c
+  pg_rand.c
+  pg_round.c
+  pg_string.c
+  se_rand.c
+  se_round.c
+  se_std.c
+  se_string.c
+  simil.c
+    正在创建库 D:\MyWork\2017C++\pg_pubkmcb\x64\Release\pg_kmcb.lib 和对象 D:\MyWork\2017C++\pg_pubkmcb\x64\Release\pg_kmcb.exp
+  正在生成代码
+  All 82 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  pg_kmcb.vcxproj -> D:\MyWork\2017C++\pg_pubkmcb\x64\Release\pg_kmcb.dll
+  pg_kmcb.vcxproj -> D:\MyWork\2017C++\pg_pubkmcb\x64\Release\pg_kmcb.pdb (Full PDB)
+  已复制         1 个文件。
+  已复制         1 个文件。
+  已复制         1 个文件。

@@ -1,0 +1,4 @@
+comment = '自定义C风格的函数'
+default_version = '1.0'
+module_pathname = '$libdir/pg_kmcb'
+relocatable = true
