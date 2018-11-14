@@ -37,8 +37,8 @@ float simil(const char *str1, unsigned int len1, const char *str2, unsigned int 
 		ptr_str2 = str2;
 	}
 	/*********************************/
-	previous = (unsigned *)palloc0(len1 + 1, sizeof(unsigned));
-	next = (unsigned *)palloc0(len1 + 1, sizeof(unsigned));
+	previous = (unsigned *)palloc0( (len1 + 1) * sizeof(unsigned));
+	next = (unsigned *)palloc0( (len1 + 1) * sizeof(unsigned));
 	for (j = 0; j < len2; ++j) {
 		for (k = 1; k <= len1; ++k) {
 			if (ptr_str1[k - 1] == ptr_str2[j])
@@ -68,9 +68,9 @@ text *same(const char *str1, unsigned int slen1, const char *str2, unsigned int 
 	out_result =(text *) palloc((len1 > len2 ? len1 : len2) + VARHDRSZ + sizeof(char) );
 	ptr_result = VARDATA(out_result);
 
-	align = (unsigned **)palloc0(len2 + 1, sizeof(unsigned *));
+	align = (unsigned **)palloc0( (len2 + 1) * sizeof(unsigned *));
 	for (r = 0; r <= len2; ++r)
-		align[r] = (unsigned *)palloc0(len1 + 1, sizeof(unsigned));
+		align[r] = (unsigned *)palloc0( (len1 + 1) * sizeof(unsigned));
 	for (r = 1; r <= len2; ++r) {
 		for (c = 1; c <= len1; ++c) {
 			if (str1[c - 1] == str2[r - 1])

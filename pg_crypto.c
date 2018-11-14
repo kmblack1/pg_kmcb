@@ -8,7 +8,6 @@
 #include "aes.h"
 #include "pg_function.h"
 
-#define AES_BLOCKLEN (16) //Block length in bytes AES is 128b block only
 
 /*
 *	AES:https://github.com/kokke/tiny-AES-c
@@ -20,191 +19,197 @@ PG_FUNCTION_INFO_V1(generate_aes_iv);
 PG_FUNCTION_INFO_V1(aes_encrypt);
 PG_FUNCTION_INFO_V1(aes_decrypt);
 
+
+//安全释放分配的内存
+#define SE_free(ptr_)\
+do {\
+	if (NULL !=ptr_) {\
+		pfree(ptr_); ptr_ = NULL;\
+	}\
+} while (0);
+
 /*生成密钥*/
 static uint8_t * generate_key(int *key_len) {
 	unsigned char* key;
 #if defined(AES192)
-	(*key_len) = 24;
+	*key_len = 24;
 #elif defined (AES256)
-	(*key_len) = 32;
+	*key_len = 32;
 #else
-	(*key_len) = 16;
+	*key_len = 16;
 #endif
-	key = palloc((*key_len));
+	key = palloc(*key_len);
 	for (int i = 0; i < (*key_len); i++)
-		key[i] = random() % 255;
+		key[i] = random() % 0xFF;
 	return key;
 }
 
-/*解析BASE64编码的KEY和IV*/
-static uint8_t *decode_aes(const char *p_key) {
-	int key_dec_len, rc, key_len;
-	uint8_t *dec_key = NULL, *key = NULL;
+/*base64编码*/
+static bool base64_encrypt(const char *data, int32_t data_len, text **ptr) {
+	text *result = NULL;
+	int32_t rc = 0, b64_len = 0;
 
-	key_len = (int)strlen(p_key);
-	key_dec_len = pg_b64_dec_len(key_len);
-	dec_key = (uint8_t *)palloc(key_dec_len);
-	rc = pg_b64_decode(p_key, key_len, (char *)dec_key);
-	if (-1 == rc) {
-		pfree(dec_key);
-		return NULL;
-	}
-#if defined(AES192)
-	key = (uint8_t *)palloc(24);
-	memcpy(key, dec_key, 24);
-#elif defined (AES256)
-	key = (uint8_t *)palloc(32);
-	memcpy(key, dec_key, 32);
-#else
-	key = (uint8_t *)palloc(16);
-	memcpy(key, dec_key, 16);
-#endif	
-	pfree(dec_key);
-	return key;
+	if (NULL == data || data_len < 1)
+		goto SE_ERROR_CLEAR;
+
+	b64_len = pg_b64_enc_len(data_len);
+	result = (text *)palloc(b64_len + VARHDRSZ);
+	rc = pg_b64_encode(data, data_len, VARDATA(result));
+	if (-1 == rc)
+		goto SE_ERROR_CLEAR;
+	SET_VARSIZE(result, rc + VARHDRSZ);
+	*ptr = result;
+	return true;
+SE_ERROR_CLEAR:
+	SE_free(result);
+	(*ptr) = NULL;
+	ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("base64 encode fail!")));
+	return false;
+}
+
+/*base64解码*/
+static bool base64_decrypt(const char *base64, int32_t b64_len, text **ptr) {
+	text *result = NULL;
+	int32_t rc = 0, bin_len = 0;
+
+	if (NULL == base64 || b64_len < 1)
+		goto SE_ERROR_CLEAR;
+
+	bin_len = pg_b64_dec_len(b64_len);
+	result = (text *)palloc(bin_len + VARHDRSZ);
+	rc = pg_b64_decode(base64, b64_len, VARDATA(result));
+	if (-1 == rc)
+		goto SE_ERROR_CLEAR;
+	SET_VARSIZE(result, rc + VARHDRSZ);
+	(*ptr) = result;
+	return true;
+SE_ERROR_CLEAR:
+	SE_free(result);
+	(*ptr) = NULL;
+	ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("base64 decode fail!")));
+	return false;
 }
 
 /*生成AES密钥或向量*/
-static text * generate_aes() {
-	int key_len, enc_len, rc;
-	unsigned char* key = NULL;
-	char *base64_dst = NULL;
-	text *result = NULL;
-
-	key = generate_key(&key_len);
-	enc_len = pg_b64_enc_len(key_len);
-	base64_dst = palloc(enc_len);
-	rc = pg_b64_encode((char *)key, key_len, (char *)base64_dst);
-	pfree(key);
-	if (-1 == rc) {
-		pfree(base64_dst);
-		return NULL;
-	}
-	result = (text *)palloc(rc + VARHDRSZ);
-	SET_VARSIZE(result, rc + VARHDRSZ);
-	memcpy(VARDATA(result), base64_dst, rc);
-	pfree(base64_dst);
-	return result;
+static bool generate_aes(text **ptr) {
+	int bin_key_len;
+	char* bin_key = NULL;
+	bin_key = generate_key(&bin_key_len);
+	if (!base64_encrypt(bin_key, bin_key_len, ptr))
+		goto SE_ERROR_CLEAR;
+	return true;
+SE_ERROR_CLEAR:
+	return false;
 }
 
 /*生成AES密钥*/
 Datum generate_aes_key(PG_FUNCTION_ARGS) {
-	text *result = generate_aes();
-	if (NULL != result)
+	text *result = NULL;
+	if (generate_aes(&result))
 		PG_RETURN_TEXT_P(PointerGetDatum(result));
 	else
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("base64 encode fail!")));
-	PG_RETURN_NULL();
+		PG_RETURN_NULL();
 }
 
 /*生成AES向量*/
 Datum generate_aes_iv(PG_FUNCTION_ARGS) {
-	text *result = generate_aes();
-	if (NULL != result)
+	text *result = NULL;
+	if (generate_aes(&result))
 		PG_RETURN_TEXT_P(PointerGetDatum(result));
 	else
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("base64 encode fail!")));
-	PG_RETURN_NULL();
+		PG_RETURN_NULL();
 }
+
+
+#define aes_encrypt_free(bin_key,bin_iv,bin_encrypt) do {\
+	if (NULL != bin_key) {\
+		pfree(bin_key); bin_key = NULL;\
+	}\
+	if (NULL != bin_iv) {\
+		pfree(bin_iv); bin_iv = NULL;\
+	}\
+	if (NULL != bin_encrypt) {\
+		pfree(bin_encrypt); bin_encrypt = NULL;\
+	}\
+} while (0);
 
 /*加密字符串*/
 Datum aes_encrypt(PG_FUNCTION_ARGS) {
-	int  base64_len, rc;
-	uint32 data_len;
-	char *p_key = NULL, *p_iv = NULL;
-	uint8_t *key = NULL, *iv = NULL, *enc_data = NULL, *p_data = NULL;
-	char *base64_dst = NULL;
-	text *result = NULL;
+	text *b64_key, *b64_iv, *bin_data;
+	text *bin_key = NULL, *bin_iv = NULL, *result;
+	char *bin_encrypt = NULL;
+	int   bin_data_len, bin_encrypt_len;
+	struct AES_ctx ctx;
+	char *ptr_tmp;
 
-	p_key = text_to_cstring(PG_GETARG_TEXT_P(0));
-	key = decode_aes(p_key);
-	if (NULL == key) {
-		pfree(p_key);
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("invalid KEY!")));
+	/* must cast away the const, unfortunately 去掉const*/
+	b64_key = pg_detoast_datum_packed((struct varlena *)(PG_GETARG_TEXT_P(0)));
+	b64_iv = pg_detoast_datum_packed((struct varlena *)(PG_GETARG_TEXT_P(1)));
+	bin_data = pg_detoast_datum_packed((struct varlena *)(PG_GETARG_TEXT_P(2)));
+
+	if (!base64_decrypt(VARDATA_ANY(b64_key), VARSIZE_ANY_EXHDR(b64_key), &bin_key))
+		goto SE_ERROR_CLEAR;
+	if (!base64_decrypt(VARDATA_ANY(b64_iv), VARSIZE_ANY_EXHDR(b64_iv), &bin_iv))
+		goto SE_ERROR_CLEAR;
+
+	bin_data_len = VARSIZE_ANY_EXHDR(bin_data); //VARSIZE_ANY_EXHDR获取的长度包含结束符0
+	//计算补位后的字节长度,asc数据大小要求16的倍数
+	bin_encrypt_len = (bin_data_len / AES_BLOCKLEN * AES_BLOCKLEN) + (0 == (bin_data_len % AES_BLOCKLEN) ? 0 : AES_BLOCKLEN);
+	bin_encrypt = (char *)palloc(bin_encrypt_len);
+	memcpy(bin_encrypt, VARDATA_ANY(bin_data), bin_data_len);
+	//bin_encrypt[bin_data_len] = '\0';
+	//补位的字节设置为0	
+	if ((bin_encrypt_len - bin_data_len) > 0) {
+		ptr_tmp = bin_encrypt + bin_data_len;
+		memset(ptr_tmp, 0, bin_encrypt_len - bin_data_len);
 	}
-
-	p_iv = text_to_cstring(PG_GETARG_TEXT_P(1));
-	iv = decode_aes(p_iv);
-	if (NULL == iv) {
-		pfree(p_key); pfree(p_iv);
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("invalid IV!")));
-	}
-
-	p_data = (uint8_t *)text_to_cstring(PG_GETARG_TEXT_P(2));
-	data_len = (uint32)strlen((char *)p_data);
-	if (0 != (data_len % AES_BLOCKLEN))
-		data_len = data_len + (AES_BLOCKLEN - (data_len % AES_BLOCKLEN));
-
-	enc_data = (uint8_t *)palloc(data_len);
-	AES_CBC_encrypt_buffer(enc_data, p_data, data_len, key, iv);
-
-	base64_len = pg_b64_enc_len(data_len);
-	base64_dst = palloc(base64_len);
-	rc = pg_b64_encode((char *)enc_data, data_len, (char *)base64_dst);
-	if (-1 == rc) {
-		pfree(p_key); pfree(p_iv); pfree(p_data);
-		pfree(key); pfree(iv);
-		pfree(enc_data); pfree(base64_dst);
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("base64 encode fail!")));
-	}
-
-	result = (text *)palloc(rc + VARHDRSZ);
-	SET_VARSIZE(result, rc + VARHDRSZ);
-	memcpy(VARDATA(result), base64_dst, rc);
-
-	pfree(p_key); pfree(p_iv); pfree(p_data);
-	pfree(key); pfree(iv);
-	pfree(enc_data); pfree(base64_dst);
+	//初始化密钥和向量后开始加密
+	AES_init_ctx_iv(&ctx, VARDATA_ANY(bin_key), VARDATA_ANY(bin_iv));
+	AES_CBC_encrypt_buffer(&ctx, (uint8_t *)bin_encrypt, bin_encrypt_len);
+	if (!base64_encrypt(bin_encrypt, bin_encrypt_len, &result))
+		goto SE_ERROR_CLEAR;
+	aes_encrypt_free(bin_key, bin_iv, bin_encrypt);
 	PG_RETURN_TEXT_P(PointerGetDatum(result));
+SE_ERROR_CLEAR:
+	aes_encrypt_free(bin_key, bin_iv, bin_encrypt);
+	PG_RETURN_NULL();
 }
 
 /*解密字符串*/
+
+#define aes_decrypt_free(bin_key,bin_iv) do {\
+	if (NULL != bin_key) {\
+		pfree(bin_key); bin_key = NULL;\
+	}\
+	if (NULL != bin_iv) {\
+		pfree(bin_iv); bin_iv = NULL;\
+	}\
+} while (0);
+
 Datum aes_decrypt(PG_FUNCTION_ARGS) {
-	int  base64_len, rc;
-	uint32 data_len;
-	char *p_key = NULL, *p_iv = NULL;
-	uint8_t *key = NULL, *iv = NULL, *dec_data = NULL, *p_data = NULL;
-	char *base64_dst = NULL;
-	text *result = NULL;
-	size_t no_padding = 0;
+	text *b64_key, *b64_iv, *b64_data;
+	text *bin_key = NULL, *bin_iv = NULL,*result;
+	struct AES_ctx ctx;
+	/* must cast away the const, unfortunately 去掉const*/
+	b64_key = pg_detoast_datum_packed((struct varlena *)(PG_GETARG_TEXT_P(0)));
+	b64_iv = pg_detoast_datum_packed((struct varlena *)(PG_GETARG_TEXT_P(1)));
+	b64_data = pg_detoast_datum_packed((struct varlena *)(PG_GETARG_TEXT_P(2)));
 
-	p_key = text_to_cstring(PG_GETARG_TEXT_P(0));
-	key = decode_aes(p_key);
-	if (NULL == key) {
-		pfree(p_key);
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("invalid KEY!")));
-	}
-
-	p_iv = text_to_cstring(PG_GETARG_TEXT_P(1));
-	iv = decode_aes(p_iv);
-	if (NULL == iv) {
-		pfree(p_key); pfree(p_iv);
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("invalid IV!")));
-	}
-
-	p_data = (uint8_t *)text_to_cstring(PG_GETARG_TEXT_P(2));
-	data_len = (uint32)strlen((char *)p_data);
-
-	base64_len = pg_b64_dec_len(data_len);
-	base64_dst = palloc(base64_len);
-	rc = pg_b64_decode((char *)p_data, data_len, base64_dst);
-	if (-1 == rc) {
-		pfree(p_key); pfree(p_iv); pfree(p_data); pfree(base64_dst);
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("base64 encode fail!")));
-	}
-	if (0 != (rc % AES_BLOCKLEN)) {
-		pfree(p_key); pfree(p_iv); pfree(p_data); pfree(base64_dst);
-		ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION), errmsg("invalid encrypt data!")));
-	}
-
-	dec_data = (uint8_t *)palloc(rc);
-	AES_CBC_decrypt_buffer(dec_data, (uint8_t *)base64_dst, rc, key, iv);
-	no_padding = strlen((char *)dec_data);
-
-	result = (text *)palloc(no_padding + VARHDRSZ);
-	SET_VARSIZE(result, no_padding + VARHDRSZ);
-	memcpy(VARDATA(result), dec_data, no_padding);
-
-	pfree(p_key); pfree(p_iv); pfree(p_data);
-	pfree(key); pfree(iv); pfree(dec_data); pfree(base64_dst);
+	if (!base64_decrypt(VARDATA_ANY(b64_key), VARSIZE_ANY_EXHDR(b64_key), &bin_key))
+		goto SE_ERROR_CLEAR;
+	if (!base64_decrypt(VARDATA_ANY(b64_iv), VARSIZE_ANY_EXHDR(b64_iv), &bin_iv))
+		goto SE_ERROR_CLEAR;
+	if (!base64_decrypt(VARDATA_ANY(b64_data), VARSIZE_ANY_EXHDR(b64_data), &result))
+		goto SE_ERROR_CLEAR;
+	if (0 != (VARSIZE_ANY_EXHDR(result) % AES_BLOCKLEN))
+		goto SE_ERROR_CLEAR;
+	
+	AES_init_ctx_iv(&ctx, VARDATA_ANY(bin_key), VARDATA_ANY(bin_iv));
+	AES_CBC_decrypt_buffer(&ctx, (uint8_t *)VARDATA_ANY(result), VARSIZE_ANY_EXHDR(result) );
+	SET_VARSIZE(result, strlen(VARDATA_ANY(result)) + VARHDRSZ);
+	aes_decrypt_free(bin_key, bin_iv);
 	PG_RETURN_TEXT_P(PointerGetDatum(result));
+SE_ERROR_CLEAR:
+	aes_decrypt_free(bin_key, bin_iv);
+	PG_RETURN_NULL();
 }
